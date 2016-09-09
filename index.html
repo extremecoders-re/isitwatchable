@@ -1,0 +1,118 @@
+<html>
+  <head>
+  <title>Is It Watchable ?</title>
+    <script>
+    function checknow()
+    {
+      var mov_size = parseFloat(document.getElementById("mov-size").value);
+      var size_units = document.getElementById("size-units").value;
+      
+      var mov_time = parseFloat(document.getElementById("runtime").value);
+      var time_units = document.getElementById("time-units").value;
+      
+      var netw_speed = parseFloat(document.getElementById("netw-speed").value);
+      var speed_units = document.getElementById("speed-units").value;
+      
+      // Convert movie size to bytes
+      if (size_units == "gb") mov_size *= 1024 * 1024 * 1024;
+      else if(size_units == "mb") mov_size *= 1024 * 1024;
+      else if(size_units == "kb") mov_size *= 1024;
+      
+      // Convert run time to seconds
+      if (time_units == "hr") mov_time *= 60 * 60;
+      else if (time_units == "mn") mov_time *= 60;
+      
+      // Convert network speed to bps
+      if (speed_units == "gbps") netw_speed *= 1024 * 1024 * 1024;
+      else if (speed_units == "mbps") netw_speed *= 1024 * 1024;
+      else if (speed_units == "kbps") netw_speed *= 1024;
+      
+      // maximum possible download in bytes
+      var max_download = mov_time * (netw_speed / 8);
+      
+      // the difference in kilobytes
+      var diff = Math.abs(max_download - mov_size);
+      var disp_units = "Bytes";
+      
+      if (diff > 1024) // More than 1024 Bytes
+        {
+          diff /= 1024;
+          disp_units = "KB";      
+        }
+      
+      if  (diff > 1024) // More than 1024 KB
+        {
+          diff /= 1024;
+          disp_units = "MB";
+        }
+      
+      if  (diff > 1024) // More than 1024 MB
+        {
+          diff /= 1024;
+          disp_units = "GB";
+        }  
+      
+      diff = diff.toFixed(2);
+      var result1 = document.getElementById("result1");
+      var result2 = document.getElementById("result2");
+      
+      if (mov_size <= max_download)
+        {
+          result1.innerText = "Congrats! You should be able to view without buffering";
+          result2.innerText = "You are safe by " + diff + " " + disp_units;
+          result1.style = "color: green;";
+          result2.style = "color: green;";      
+        }
+      
+      else
+        {
+          result1.innerText = "Sorry! You cannot view without buffering";
+          result2.innerText = "You are falling short by " + diff + " " + disp_units;
+          result1.style = "color: red;";
+          result2.style = "color: red;";
+        }  
+    }
+    </script>
+  </head>
+  <body>
+    <h1>Is It Watchable ?</h1>
+    <table>
+      <tr>
+        <td>Movie size</td>
+        <td><input id="mov-size" type="number" value="1" min="0"></td>    
+        <td>
+          <select id="size-units">
+            <option value="kb">KiB</option>
+            <option value="mb" selected>MiB</option>
+            <option value="gb">GiB</option>        
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Running time</td>
+        <td><input id="runtime" type="number" value="1" min="0"></td>
+        <td>
+          <select id="time-units">
+            <option value="sec">seconds</option>
+            <option value="mn" selected>minutes</option>
+            <option value="hr">hour</option>
+          </select>
+        </td>
+      </tr>
+      <tr>
+        <td>Connection Speed</td>
+        <td><input id="netw-speed" type="number" value="1" min="1"></td>
+        <td>
+          <select id="speed-units">
+            <option value="kbps">Kbps</option>
+            <option value="mbps" selected>Mbps</option>
+            <option value="gbps">Gbps</option>        
+          </select>
+        </td>    
+      </tr>  
+    </table>
+    <button type="button" onclick="checknow()">Check</button><br>
+    <h3 id="result1"></h3>
+    <h4 id="result2"></h4>
+  </body>  
+</html>
